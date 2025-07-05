@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete {{ object.bugcode}}{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 30px;">
+    <h2 style="color: #e53e3e; margin-bottom: 10px;">⚠️ Confirm Deletion</h2>
+    <p style="color: #718096;">This action cannot be undone</p>
+</div>
+
+<div class="bug-card" style="border-left: 4px solid #e53e3e;">
+    <div style="margin-bottom: 25px;">
+        <h3 style="color: #2d3748; margin-bottom: 15px;">Bug Details</h3>
+        <div style="background-color: #fed7d7; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <p style="color: #742a2a; margin-bottom: 8px;"><strong>Bug ID:</strong> {{ object.bugcode }}</p>
+            <p style="color: #742a2a; margin-bottom: 8px;"><strong>Reported By:</strong> {{ object.created_by }}</p>
+            <p style="color: #742a2a; margin-bottom: 8px;"><strong>Status:</strong> {{ object.status }}</p>
+            <p style="color: #742a2a;"><strong>Created:</strong> {{ object.created_at|date:"F d, Y H:i" }}</p>
+        </div>
+        
+        {% if object.info %}
+        <div style="margin-bottom: 20px;">
+            <label style="color: #4a5568; font-weight: 600; margin-bottom: 8px; display: block;">Description:</label>
+            <p style="color: #2d3748; font-style: italic; line-height: 1.5;">{{ object.info|truncatewords:30 }}</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div style="background-color: #fff5f5; padding: 20px; border-radius: 8px; border: 1px solid #fed7d7; margin-bottom: 25px;">
+        <p style="color: #c53030; font-weight: 500;">Are you sure you want to permanently delete this bug report?</p>
+    </div>
+
+    <form method="post" style="display: inline;">
+        {% csrf_token %}
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <button type="submit" class="btn btn-danger">🗑️ Yes, Delete Bug</button>
+            <a href="{% url 'bug-detail' object.pk %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

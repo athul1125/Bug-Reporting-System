@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title|default:"Report Bug" }}{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 30px;">
+    <h2 style="color: #2d3748; margin-bottom: 10px;">{{ title|default:"Report a New Bug" }}</h2>
+</div>
+
+<div class="bug-card">
+    {% if form.errors %}
+        <div class="alert alert-error" style="margin-bottom: 25px;">
+            <strong>⚠️ Please correct the following errors:</strong>
+            <ul style="margin: 8px 0 0 20px;">
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div style="margin-bottom: 25px;">
+            <h3 style="color: #4a5568; margin-bottom: 20px; font-size: 18px;">Bug Information</h3>
+        </div>
+        
+        {{ form.as_p }}
+        
+        <div style="display: flex; gap: 15px; margin-top: 30px; flex-wrap: wrap;">
+            <button type="submit" class="btn">
+                {% if form.instance.pk %}
+                    ✏️ Update Bug Report
+                {% else %}
+                    📝 Submit Bug Report
+                {% endif %}
+            </button>
+            <a href="{% url 'bug-list' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<!--
+<div style="margin-top: 30px; padding: 20px; background-color: #edf2f7; border-radius: 8px; border-left: 4px solid #4299e1;">
+    <h4 style="color: #2d3748; margin-bottom: 10px;">💡 Tips for Better Bug Reports</h4>
+    <ul style="color: #4a5568; margin-left: 20px; line-height: 1.6;">
+        <li>Provide clear steps to reproduce the issue</li>
+        <li>Include screenshots when possible</li>
+        <li>Mention the expected vs actual behavior</li>
+        <li>Include relevant system information</li>
+    </ul>
+</div>
+-->
+
+{% endblock %}

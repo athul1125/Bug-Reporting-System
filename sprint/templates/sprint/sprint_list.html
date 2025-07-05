@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if object_list %}
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h2 style="color: #2d3748; font-size: 24px; margin: 0;">Sprint Dashboard</h2>
+        {% if user.is_authenticated %}
+            <a href="{% url 'sprint_create' %}" class="btn">Create Sprint</a>
+        {% endif %}
+    </div>
+    
+    <div style="margin-bottom: 20px;">
+        <p style="color: #718096;">Total sprints: {{ object_list|length }}</p>
+    </div>
+    
+    {% for sprint in object_list %}
+    <div class="bug-card">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+            <div>
+                <h3 style="color: #2d3748; margin-bottom: 8px;">{{ sprint.name }}</h3>
+                <p style="color: #4a5568; margin-bottom: 5px;"><strong>Lead Developer:</strong> {{ sprint.lead_developer.username }}</p>
+                <p style="color: #4a5568; margin-bottom: 5px;"><strong>Duration:</strong> 
+                    <span class="status-badge" style="background-color: #e2e8f0; color: #2d3748; padding: 4px 8px; border-radius: 4px; font-size: 12px;">{{ sprint.duration }} days</span>
+                </p>
+                <p style="color: #718096; font-size: 14px;">
+                    <strong>Developers:</strong> 
+                    <span title="Total developers / Active developers">
+                        {{ sprint.developers.count }} / {{ sprint.get_active_developers }}
+                    </span>
+                </p>
+                {% with bug_counts=sprint.get_bug_counts %}
+                <p style="color: #718096; font-size: 14px;">
+                    <strong>Bugs:</strong> 
+                    <span title="Total bugs">{{ bug_counts.total }}</span>
+                </p>
+                {% endwith %}
+                {% if sprint.start_date %}
+                <p style="color: #718096; font-size: 14px;"><strong>Start Date:</strong> {{ sprint.start_date|date:"M d, Y" }}</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if sprint.description %}
+            <p style="color: #4a5568; margin-bottom: 15px; font-style: italic;">{{ sprint.description|truncatewords:20 }}</p>
+        {% endif %}
+        
+        <a href="{% url 'sprint_detail' sprint.pk %}" class="btn btn-secondary" style="font-size: 14px; padding: 6px 12px;">View Details</a>
+        
+        {% if user.is_authenticated %}
+            <a href="{% url 'sprint_delete' sprint.pk %}" class="btn btn-danger" style="font-size: 14px; padding: 6px 12px; margin-left: 10px;">Delete</a>
+        {% endif %}
+    </div>
+    {% endfor %}
+{% else %}
+    <div style="text-align: center; padding: 60px 20px;">
+        <h3 style="color: #718096; margin-bottom: 15px;">No sprints found</h3>
+        <p style="color: #a0aec0; margin-bottom: 30px;">Get started by creating your first sprint</p>
+        <a href="{% url 'sprint_create' %}" class="btn">Create New Sprint</a>
+    </div>
+{% endif %}
+{% endblock %}

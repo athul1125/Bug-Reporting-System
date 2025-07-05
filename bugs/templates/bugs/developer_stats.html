@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Developer Bug Status{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <h2 style="color: #2d3748; font-size: 24px; margin: 0;">Developer Bug Status</h2>
+    <button id="refresh-stats-btn" style="padding: 8px 12px; border: 1px solid #cbd5e0; border-radius: 5px; background-color: #fff; cursor: pointer;">Refresh</button>
+</div>
+
+<div id="dev-stats-container">
+    <!-- AJAX-injected content -->
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    function loadDeveloperStats() {
+        $.ajax({
+            url: '{% url "api-developer-stats" %}',
+            method: 'GET',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            success: function(data) {
+                let cards = "";
+                if (data.length > 0) {
+                    data.forEach(dev => {
+                        cards += `<div class="bug-card">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <div>
+                                    <h3 style="color: #2d3748; margin-bottom: 8px;">${dev.first_name} ${dev.last_name}</h3>
+                                    <p style="color: #4a5568; margin-bottom: 5px;"><strong>Username:</strong> ${dev.username}</p>
+                                    <p style="color: #718096; font-size: 14px;"><strong>Contact:</strong> ${dev.profile.contact_number || 'N/A'}</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; justify-content: space-around; text-align: center;">
+                                <div>
+                                    <p style="font-size: 20px; font-weight: 600; color: #e53e3e;">${dev.pending}</p>
+                                    <p style="color: #718096; font-size: 12px;">Pending</p>
+                                </div>
+                                <div>
+                                    <p style="font-size: 20px; font-weight: 600; color: #dd6b20;">${dev.in_progress}</p>
+                                    <p style="color: #718096; font-size: 12px;">In Progress</p>
+                                </div>
+                                <div>
+                                    <p style="font-size: 20px; font-weight: 600; color: #38a169;">${dev.completed}</p>
+                                    <p style="color: #718096; font-size: 12px;">Completed</p>
+                                </div>
+                            </div>
+                        </div>`;
+                    });
+                } else {
+                    cards = `<div class="bug-card" style="text-align: center;">
+                        <p style="color: #718096;">No developer statistics available at the moment.</p>
+                    </div>`;
+                }
+                $('#dev-stats-container').html(cards);
+            },
+            error: function(xhr) {
+                console.error("Failed to load developer stats:", xhr.responseText);
+                $('#dev-stats-container').html('<p style="color: red; text-align: center;">Could not load developer stats. Please try again later.</p>');
+            }
+        });
+    }
+
+    loadDeveloperStats(); // Initial load
+
+    $('#refresh-stats-btn').click(function() {
+        loadDeveloperStats();
+    });
+});
+</script>
+{% endblock %}

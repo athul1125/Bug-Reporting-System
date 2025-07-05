@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}My Bugs{% endblock %}
+
+{% block content %}
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <h2 style="color: #2d3748; font-size: 24px; margin: 0;">Bugs Reported by You</h2>
+    {% if user.is_authenticated %}
+        <a href="{% url 'bug-download' %}" class="btn"> Download Report</a>
+    {% endif %}
+</div>
+<div style="margin-bottom: 20px;">
+    <p style="color: #718096;">Total bugs: {{ bugs|length }}</p>
+</div>
+
+{% if bugs %}
+    {% for bug in bugs %}
+    <div class="bug-card">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+            <div>
+                <h3 style="color: #2d3748; margin-bottom: 8px;">{{ bug.bugcode }}</h3>
+                <p style="color: #4a5568; margin-bottom: 5px;"><strong>Reported By:</strong> {{ bug.created_by }}</p>
+                <p style="color: #4a5568; margin-bottom: 5px;"><strong>Status:</strong> 
+                    <span class="status-badge status-{{ bug.status|lower }}">{{ bug.status }}</span>
+                </p>
+                <p style="color: #718096; font-size: 14px;"><strong>Reported:</strong> {{ bug.created_at|date:"M d, Y H:i" }}</p>
+                {% if bug.duration is not None %}
+                <p style="color: #718096; font-size: 14px;"><strong>Duration:</strong> {{ bug.duration }} hrs</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if bug.info %}
+            <p style="color: #4a5568; margin-bottom: 15px; font-style: italic;">{{ bug.info|truncatewords:20 }}</p>
+        {% endif %}
+        
+        <a href="{% url 'bug-detail' bug.id %}" class="btn btn-secondary" style="font-size: 14px; padding: 6px 12px;">View Details</a>
+        
+        {% if bug.user == request.user and perms.bugs.delete_bug %}
+            <a href="{% url 'bug-delete' bug.id %}" class="btn btn-danger" style="font-size: 14px; padding: 6px 12px; margin-left: 10px;">Delete</a>
+        {% endif %}
+    </div>
+    {% endfor %}
+{% else %}
+    <div style="text-align: center; padding: 60px 20px;">
+        <h3 style="color: #718096; margin-bottom: 15px;">No bugs reported yet</h3>
+        {% if perms.bugs.add_bug %}
+            <a href="{% url 'bug-create' %}" class="btn">📝 Report New Bug</a>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

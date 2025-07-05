@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}All Users{% endblock %}
+{% block content %}
+
+<div style="margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
+    <div>
+        <h2 style="color: #2d3748; margin-bottom: 10px;">All Users</h2>
+        <p style="color: #718096;">List of all registered users and their details.</p>
+    </div>
+    {% if user.is_superuser and perms.users.add_profile %}
+        <a href="{% url 'create' %}" class="btn" style="margin: 0;">Add User</a>
+    {% endif %}
+</div>
+
+<table style="width:100%; border-collapse: collapse; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+    <thead>
+        <tr style="background: #f7fafc;">
+            <th style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Username</th>
+            <th style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Email</th>
+            <th style="padding: 12px; border-bottom: 1px solid #e2e8f0;">First Name</th>
+            <th style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Last Name</th>
+            <th style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Role</th>
+            <th style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Contact No</th>
+            <th style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Address</th>
+            {% if request.user.is_superuser %}
+            <th style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Actions</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">{{ user.username }}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">{{ user.email }}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">{{ user.first_name }}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">{{ user.last_name }}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">{{ user.profile.role|default:'-' }}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">{{ user.profile.contact_number|default:'-' }}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">{{ user.profile.address|default:'-' }}</td>
+            {% if request.user.is_superuser %}
+            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; white-space:nowrap;">
+                <a href="{% url 'edit' user.id %}" class="btn btn-secondary" style="padding: 4px 10px; font-size: 13px;">Edit</a>
+                <a href="{% url 'delete' user.id %}" class="btn btn-danger" style="padding: 4px 10px; font-size: 13px; margin-left: 5px;">Delete</a>
+            </td>
+            {% endif %}
+        </tr>
+        {% empty %}
+        <tr><td colspan="8{% if request.user.is_superuser %}+1{% endif %}" style="text-align:center; color:#888;">No users found.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

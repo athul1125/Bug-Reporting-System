@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Bug Reporting System{% endblock %}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .header .subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        /* Navigation */
+        .nav {
+            background-color: white;
+            padding: 15px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .nav a {
+            color: #495057;
+            text-decoration: none;
+            margin-right: 30px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav a:hover {
+            color: #667eea;
+        }
+
+        /* Main Content */
+        .main-content {
+            background-color: white;
+            margin: 30px 0;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        }
+
+        /* Bug Card Styles */
+        .bug-card {
+            border: 1px solid #e9ecef;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            background-color: #fff;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .bug-card:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .bug-card p {
+            margin-bottom: 8px;
+        }
+
+        .bug-card strong {
+            color: #495057;
+            font-weight: 600;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #2563eb; /* blue-600 */
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background-color: #1d4ed8; /* blue-700 */
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background-color: #e53e3e;
+        }
+
+        .btn-danger:hover {
+            background-color: #c53030;
+        }
+
+        .btn-secondary {
+            background-color: #f59e42; /* orange-400 */
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d97706; /* orange-600 */
+            color: #fff;
+        }
+
+        .btn-logout {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #e2e8f0;
+            color: #4a5568 !important;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-logout:hover {
+            background-color: #667eea;
+            color: #fff !important;
+        }
+
+        /* Form Styles */
+        form {
+            max-width: 600px;
+        }
+
+        form p {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #4a5568;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-open {
+            background-color: #fed7d7;
+            color: #c53030;
+        }
+
+        .status-closed {
+            background-color: #c6f6d5;
+            color: #276749;
+        }
+
+        .status-in-progress {
+            background-color: #feebc8;
+            color: #c05621;
+        }
+
+        .status-pending {
+            background-color: #fbb6ce;
+            color: #97266d;
+        }
+
+        .status-resolved {
+            background-color: #bee3f8;
+            color: #2c5282;
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+
+        .alert-error {
+            background-color: #fed7d7;
+            color: #c53030;
+            border-left-color: #e53e3e;
+        }
+
+        .alert-success {
+            background-color: #c6f6d5;
+            color: #276749;
+            border-left-color: #38a169;
+        }
+
+        .alert-warning {
+            background-color: #feebc8;
+            color: #c05621;
+            border-left-color: #ed8936;
+        }
+
+        .alert-info {
+            background-color: #bee3f8;
+            color: #2c5282;
+            border-left-color: #4299e1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .main-content {
+                margin: 20px 0;
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .nav div > div {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start !important;
+            }
+
+            .nav div > div > div:first-child {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .bug-card {
+                padding: 15px;
+            }
+
+            .btn {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+
+            form {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>Bug Reporting System</h1>
+        </div>
+    </header>
+
+    <nav class="nav">
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                <div>
+                    {% if user.is_authenticated %}
+                        {%if perms.users.view_profile%}
+                            <a href="{% url 'profile-view' %}">My Profile</a>
+                        {% endif %}
+
+                        {% if user.is_superuser %}
+                            <a href="{% url 'user-list' %}">All Users</a>
+                        {% endif %}
+
+                        {% if user.profile.role != 'developer' %}
+                            <a href="{% url 'my-bugs' %}">My Bugs</a>
+                        {% endif %}
+
+                        {% if user.profile.role != 'tester' %}
+                            <a href="{% url 'my-assigned-bugs' %}">Assigned</a>
+                        {% endif %}
+
+                        <a href="{% url 'bug-list' %}">Dashboard</a>
+
+                        {% if user.profile.role != 'tester' %}
+                            <a href="{% url 'developer-stats' %}">Dev Stats</a>
+                            <a href="{% url 'sprint_list' %}">Sprints</a>
+                        {% endif %}
+
+                        {% if perms.bugs.add_bug %}
+                            <a href="{% url 'bug-create' %}">Report</a>
+                        {% endif %}
+
+                        <a href="{% url 'bug-upload' %}">Upload</a>
+
+
+                    {% endif %}
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    {% if user.is_authenticated %}
+                        <span style="color:rgb(63, 89, 141); font-weight: 500;">Hi, {{ user.username }}</span>
+                        <a href="{% url 'logout' %}" class="btn-logout" style="margin: 0; padding: 8px 16px; font-size: 14px;">Logout</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+</body>
+</html>

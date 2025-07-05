@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}My Profile{% endblock %}
+{% block content %}
+<div style="margin-bottom: 30px;">
+    <h2 style="color: #2d3748; margin-bottom: 10px;">👤 Profile Details</h2>
+    <p style="color: #718096;">Your personal information</p>
+</div>
+
+<div class="bug-card" style="margin-bottom: 30px;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px;">
+        <div>
+            <label style="color: #4a5568; font-weight: 600; margin-bottom: 5px; display: block;">Username</label>
+            <p style="color: #2d3748; font-size: 16px;">{{ request.user.username }}</p>
+        </div>
+        <div>
+            <label style="color: #4a5568; font-weight: 600; margin-bottom: 5px; display: block;">Email</label>
+            <p style="color: #2d3748; font-size: 16px;">{{ request.user.email }}</p>
+        </div>
+        <div>
+            <label style="color: #4a5568; font-weight: 600; margin-bottom: 5px; display: block;">Role</label>
+            <p style="color: #2d3748; font-size: 16px;">{{ object.role|default:'Not set' }}</p>
+        </div>
+        <div>
+            <label style="color: #4a5568; font-weight: 600; margin-bottom: 5px; display: block;">Contact No</label>
+            <p style="color: #2d3748; font-size: 16px;">{{ object.contact_number|default:'Not set' }}</p>
+        </div>
+    </div>
+    <div>
+        <label style="color: #4a5568; font-weight: 600; margin-bottom: 5px; display: block;">Address</label>
+        <p style="color: #2d3748; font-size: 16px;">{{ object.address|default:'Not set' }}</p>
+    </div>
+</div>
+
+<div style="display: flex; gap: 15px; flex-wrap: wrap;">
+    {% if perms.users.edit_user_profile_perm %}
+        <a href="{% url 'profile-edit' %}" class="btn">✏️ Edit Profile</a>
+    {% endif %}
+    <a href="{% url 'password_change' %}" class="btn btn-secondary">🔑 Change Password</a>
+</div>
+{% endblock %}
