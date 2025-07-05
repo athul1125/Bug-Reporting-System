@@ -128,12 +128,12 @@ LOGIN_REDIRECT_URL = '/bugs/'
 LOGOUT_REDIRECT_URL = '/logout/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
+EMAIL_HOST = ''
+EMAIL_PORT = 
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = '21cs076@mgits.ac.in'
-EMAIL_HOST_PASSWORD = 'qijl arky edfc mcdv'  # Use an app password, not your real password
-DEFAULT_FROM_EMAIL = '21cs076@mgits.ac.in'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+DEFAULT_FROM_EMAIL = ''
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
